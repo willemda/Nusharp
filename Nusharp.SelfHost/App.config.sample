@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <startup> 
+        <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5" />
+    </startup>
+  <appSettings>
+    <add key="packageRepositoryPath" value="/var/nusharp/packages"/>
+    <add key="uri" value="http://localhost:1338"/>
+    <add key="username" value="Nusharp"/>
+    <add key="password" value="D64767AA-CCC2-43C9-BA99-F39247963628"/>
+  </appSettings>
+</configuration>
