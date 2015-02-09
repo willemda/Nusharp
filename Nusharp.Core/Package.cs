@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using Nusharp.Core.Utils;
+using ICSharpCode.SharpZipLib.Zip;
 
 namespace Nusharp.Core
 {
@@ -58,10 +58,10 @@ namespace Nusharp.Core
 			pkg.Published = fInfo.LastWriteTimeUtc;
 			pkg.PackageSize = fInfo.Length;
 
-			using (var zipArchive = ZipFile.OpenRead(filePath))
+			using (var zipArchive = new ZipFile(File.OpenRead(filePath)))
 			{
-				var nuspecEntry = zipArchive.Entries.First(x => x.Name.Contains(".nuspec"));
-				var reader = XmlReader.Create(nuspecEntry.Open());
+				var nuspecEntry = zipArchive.Entries().First(x => x.Name.Contains(".nuspec"));
+				var reader = XmlReader.Create(zipArchive.GetInputStream(nuspecEntry));
 				XElement element = XElement.Load(reader);
 				XNamespace ns = element.GetDefaultNamespace();
 				var nsm = new XmlNamespaceManager(reader.NameTable);

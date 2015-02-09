@@ -61,6 +61,7 @@
     <Compile Include="UserValidator.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config.sample" />
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
