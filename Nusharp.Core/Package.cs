@@ -45,7 +45,7 @@ namespace Nusharp.Core
 
 		public string Path { get; set; }
 
-		public static Package FromNupkg(string filePath, IList<Package> packages)
+		public static Package FromNupkg(string filePath)
 		{
 			var pkg = new Package();
 			pkg.Path = filePath;
@@ -89,8 +89,6 @@ namespace Nusharp.Core
 				if(dependencyNodes.Any()){
 					pkg.Dependencies = dependencyNodes.Select(x => x.Attribute("id").Value + ":" + x.Attribute("version").Value).Aggregate((x, y) => x + "|" + y);
 				}
-
-				pkg.IsLatestVersion = pkg.IsAbsoluteLatestVersion = !packages.Where(x => x.Id == pkg.Id && x.Version > pkg.Version).Any();
 			}
 			return pkg;
 		}

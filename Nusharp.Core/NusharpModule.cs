@@ -52,7 +52,7 @@ namespace Nusharp.Core
 			using(var packageStream = new FileStream(tempFileName, FileMode.Create)){
 				Request.Files.First(x => x.Name == "package").Value.CopyTo(packageStream);
 			}
-			Package package = Package.FromNupkg(tempFileName, new List<Package>());
+			Package package = Package.FromNupkg(tempFileName);
 			File.Copy(tempFileName, Path.Combine(Config.PackageRepositoryPath, string.Format("{0}.{1}.nupkg", package.Id, package.Version)));
 			File.Delete(tempFileName);
 			return new Response();
@@ -91,8 +91,14 @@ namespace Nusharp.Core
 			IList<Package> packages = new List<Package>();
 			foreach (var packagePath in Directory.GetFiles(Config.PackageRepositoryPath, "*.nupkg").OrderByDescending(x => x))
 			{
-				packages.Add(Package.FromNupkg(packagePath, packages));
+				packages.Add(Package.FromNupkg(packagePath));
 			}
+
+			foreach (var package in packages)
+			{
+				package.IsLatestVersion = package.IsAbsoluteLatestVersion = !packages.Any(x => x.Version > package.Version && x.Id == package.Id);
+			}
+
 			return packages;
 		}
 
