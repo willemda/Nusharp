@@ -23,11 +23,36 @@ namespace Nusharp.Core
 			Get["/api/v2/Packages{.*}"] = SearchPackages;
 			Get["/api/v2/Search{.*}"] = SearchPackages;
 			Get["/api/v2/FindPackagesById{.*}"] = SearchPackages;
+			Get["/api/v2/GetUpdates{.*}"] = UpdatePackages;
 			Get["/api/v2/Search()/$count{.*}"] = CountPackages;
 
 			Get["/api/v2/package/{Id}/{Version}"] = DownloadPackage;
 
 			Put["/api/v2"] = PushPackage;
+		}
+
+		internal dynamic UpdatePackages(dynamic request)
+		{
+
+			var feed = BuildFeed();
+			var packageRequest = PackageRequest.FromRequest(Request);
+			
+			foreach (var package in Packages().Where(x =>
+			{
+				if (packageRequest.UpdatePackages.ContainsKey(x.Id) && packageRequest.UpdatePackages[x.Id] < x.Version && x.IsLatestVersion)
+					return true;
+				return false;
+			}))
+			{
+				feed.Element(Constants.Xmlns + "feed").Add(package.ToXml());
+			}
+
+			var sw = new StringWriter();
+			feed.Save(sw);
+
+			var response = (Response)sw.GetStringBuilder().ToString();
+			response.ContentType = "application/atom+xml;type=feed;charset=utf-8";
+			return response;
 		}
 
 		internal dynamic Root(dynamic request)
@@ -53,7 +78,7 @@ namespace Nusharp.Core
 				Request.Files.First(x => x.Name == "package").Value.CopyTo(packageStream);
 			}
 			Package package = Package.FromNupkg(tempFileName);
-			File.Copy(tempFileName, Path.Combine(Config.PackageRepositoryPath, string.Format("{0}.{1}.nupkg", package.Id, package.Version)));
+			File.Copy(tempFileName, Path.Combine(Config.PackageRepositoryPath, string.Format("{0}.{1}.nupkg", package.Id, package.Version)), true);
 			File.Delete(tempFileName);
 			return new Response();
 		}

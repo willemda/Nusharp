@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using Nancy;
+using System.Collections.Generic;
 
 namespace Nusharp.Core
 {
@@ -15,6 +16,8 @@ namespace Nusharp.Core
 		public string Filter { get; set; }
 		public string Id { get; set; }
 		public Version Version { get; set; }
+
+		public IDictionary<string, Version> UpdatePackages { get; set; }
 
 		public static PackageRequest FromRequest(Request request)
 		{
@@ -39,6 +42,19 @@ namespace Nusharp.Core
 			{
 				packageRequest.Id = regex.Match(query).Groups[1].Value;
 				packageRequest.Version = new Version(regex.Match(query).Groups[2].Value);
+			}
+
+			if (!string.IsNullOrWhiteSpace(request.Query["packageIds"]) && !string.IsNullOrWhiteSpace(request.Query["versions"]))
+			{
+				var packageIdString = (string)request.Query["packageIds"];
+				var versionString = (string)request.Query["versions"];
+				string[] packageIds = packageIdString.Remove(packageIdString.Length - 1, 1).Remove(0, 1).Split(new []{"|"}, StringSplitOptions.RemoveEmptyEntries);
+				string[] versions = versionString.Remove(versionString.Length - 1, 1).Remove(0, 1).Split(new []{"|"}, StringSplitOptions.RemoveEmptyEntries);
+				packageRequest.UpdatePackages = new Dictionary<string, Version>();
+
+				for(int num = 0 ; num < packageIds.Length; num ++){
+					packageRequest.UpdatePackages.Add(packageIds[num], new Version(versions[num]));
+				}
 			}
 
 			return packageRequest;
