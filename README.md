@@ -42,4 +42,7 @@ stdout_logfile = /var/log/supervisor/nusharp-stdout.log
 directory=/opt/nusharp
 ```
 
+#Other Nuget Server Projects
+
+[https://github.com/kendarorg/PhpNuget](https://github.com/kendarorg/PhpNuget)
 
