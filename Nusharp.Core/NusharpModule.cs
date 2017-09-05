@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Nancy;
-using Nancy.Responses;
 using Nusharp.Core.Utils;
+using Nancy;
 using Nancy.Security;
+using Nancy.Responses;
 
 namespace Nusharp.Core
 {
-	public class NusharpModule : NancyModule
+    public class NusharpModule : NancyModule
 	{ 
 		public NusharpModule()
 		{

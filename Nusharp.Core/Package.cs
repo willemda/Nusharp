@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -10,7 +9,7 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace Nusharp.Core
 {
-	public class Package
+    public class Package
 	{
 		public string Id { get; set; }
 		public Version Version { get; set; }
